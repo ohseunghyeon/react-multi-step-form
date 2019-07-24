@@ -1,0 +1,23 @@
+.nav {
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #95a5a6;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  color: #FFF;
+  text-decoration: none;
+}
+
+.btn[disabled]{
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn[disabled]:hover {
+  color: inherit;
+}

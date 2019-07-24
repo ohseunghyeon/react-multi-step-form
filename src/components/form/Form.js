@@ -2,69 +2,42 @@ import React, { Fragment, useState } from 'react';
 
 import styles from './Form.module.css';
 import { useFormData } from '../../hooks';
-import Item from '../form-item/Item';
-import Nav from '../form-nav/Nav';
+import Nav from './FormNav'
 
 export default function Form() {
-  const [values, setValues] = useState([]);
-  const [formData] = useFormData(setValues);
+  const [items, setItems] = useState([]);
+  const [formData] = useFormData(setItems);
   const [step, setStep] = useState(0);
+  const [isError, setIsError] = useState(false);
 
   if (!formData.items) {
     return false;
   }
 
-  const item = formData.items[step];
-
   const handleChange = (e) => {
-    const newValues = [...values];
+    const newItems = [...items];
 
-    const selectedValue = item.formType === 3 // text
-      ? e.target.value
-      : Number(e.target.value);
+    newItems[step] = items[step].copyWithValues({
+      value: e.target.value, // could be optionId or text
+      checked: e.target.checked
+    });
 
-    if (item.formType === 1) { // checkbox
-      newValues[step] = [...values[step]];
-      newValues[step][selectedValue] = e.target.checked;
-    } else {
-      newValues[step] = selectedValue;
+    setItems(newItems);
+  };
+
+  const checkValidation = () => {
+    if (items[step].validate()) {
+      setIsError(false);
+      return true;
     }
 
-    setValues(newValues);
-  };
+    setIsError(true);
+  }
 
   const handleSubmit = () => {
     const body = {
       id: formData.formId,
-      items: formData.items
-        .map(({ itemId: id, formType, options }, index) => {
-          let answer;
-
-          switch (formType) {
-            case 1: // checkbox
-              answer = values[index].reduce((arr, cur, index) => {
-                if (cur) {
-                  const a = options.filter(o => o.id === index)[0];
-                  a && arr.push(a.text);
-                }
-                return arr;
-              }, [])
-                .join();
-              break;
-
-            case 2: // radio
-            case 4: // selectbox
-              const a = options.filter(o => o.id === values[index])[0];
-              answer = a && a.text;
-              break;
-
-            default: // text
-              answer = values[index];
-              break;
-          }
-
-          return { id, answer };
-        }),
+      items: items.map(item => item.getSubmitData())
     };
 
     // TODO: change this to send body to server
@@ -80,17 +53,24 @@ export default function Form() {
       </header>
 
       <main className={styles.section}>
-        <Item
-          value={values[step]}
-          item={item}
-          handleChange={handleChange}
-        />
+
+        <div className={styles.item}>
+          <h2 className={styles.item__title}>
+            {items[step].title}
+          </h2>
+          {items[step].render(handleChange)}
+        </div>
+
+        {isError && <div className={styles.error}>값을 입력해주세요!</div>}
+
         <Nav
           step={step}
           setStep={setStep}
           lastStep={formData.items.length - 1}
+          isValid={checkValidation}
           handleSubmit={handleSubmit}
         />
+
       </main>
     </Fragment>
   );

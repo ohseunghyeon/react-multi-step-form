@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import inputJson from '../assets/input.json';
+import { Checkbox, Radio, Text, Selectbox } from '../components/item';
 
-export default function useFormData(setValues) {
+export default function useFormData(setItems) {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -12,38 +13,19 @@ export default function useFormData(setValues) {
       // sort items just in case
       formData.items = formData.items.sort((a, b) => a.itemId > b.itemId);
 
-      setValues(makeDefaultValues(formData.items));
+      // initiate items with their data
+      const itemConstructors = [null, Checkbox, Radio, Text, Selectbox];
+      setItems(
+        formData.items.map(
+          item => itemConstructors[item.formType](item)
+        )
+      );
 
       setFormData(formData);
     }
 
     fetchFormData();
-  }, [setValues]);
+  }, [setItems]);
 
   return [formData, setFormData];
-}
-
-/**
- * make default answer values for each item 
- */
-function makeDefaultValues(items) {
-  const answers = [];
-
-  items.forEach((item, index) => {
-    switch (item.formType) {
-      case 1: // checkbox can have multiple answers
-        answers[index] = [];
-        break;
-      case 2: // radio
-      case 4: // selectbox have first option selected
-        answers[index] = item.options[0].id;
-        break;
-      case 3: // text
-        answers[index] = '';
-        break;
-      default:
-    }
-  });
-
-  return answers;
 }
