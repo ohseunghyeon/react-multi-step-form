@@ -14,7 +14,7 @@ export default function Form() {
     return false;
   }
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     const newItems = [...items];
 
     newItems[step] = items[step].copyWithValues({
@@ -25,7 +25,7 @@ export default function Form() {
     setItems(newItems);
   };
 
-  const checkValidation = () => {
+  function checkValidation() {
     if (items[step].validate()) {
       setIsError(false);
       return true;
@@ -35,7 +35,7 @@ export default function Form() {
     return false;
   }
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     const body = {
       id: formData.formId,
       items: items.map(item => item.getSubmitData())

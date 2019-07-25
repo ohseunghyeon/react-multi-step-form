@@ -1,34 +1,31 @@
 import React from 'react';
-import './FormNav.css';
+import styles from './FormNav.module.css';
+import Button from '../button/Button';
 
 export default function Nav({ step, setStep, lastStep, checkValidation, handleSubmit }) {
   return (
-    <div className="nav">
-      <button
-        className="btn"
+    <div className={styles.nav}>
+      <Button
         onClick={() => setStep(step => step - 1)}
         disabled={step < 1}
-      >
-        이전
-      </button>
+        text="이전"
+      />
+
       {step !== lastStep &&
-        <button
-          className="btn"
+        <Button
           onClick={() => checkValidation() && setStep(step => step + 1)}
           disabled={step > lastStep - 1}
-        >
-          다음
-      </button>
+          text="다음"
+        />
       }
       {step === lastStep &&
-        <button
-          className="btn"
+        <Button
           onClick={() => checkValidation() && handleSubmit()}
           disabled={step !== lastStep}
-        >
-          제출
-      </button>
+          text="제출"
+        />
       }
     </div>
   )
 }
+
