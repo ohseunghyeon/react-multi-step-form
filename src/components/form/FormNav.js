@@ -1,12 +1,12 @@
 import React from 'react';
 import './FormNav.css';
 
-export default function Nav({ step, setStep, lastStep, isValid, handleSubmit }) {
+export default function Nav({ step, setStep, lastStep, checkValidation, handleSubmit }) {
   return (
     <div className="nav">
       <button
         className="btn"
-        onClick={() => setStep(step - 1)}
+        onClick={() => setStep(step => step - 1)}
         disabled={step < 1}
       >
         이전
@@ -14,7 +14,7 @@ export default function Nav({ step, setStep, lastStep, isValid, handleSubmit }) 
       {step !== lastStep &&
         <button
           className="btn"
-          onClick={() => isValid() && setStep(step + 1)}
+          onClick={() => checkValidation() && setStep(step => step + 1)}
           disabled={step > lastStep - 1}
         >
           다음
@@ -23,7 +23,7 @@ export default function Nav({ step, setStep, lastStep, isValid, handleSubmit }) 
       {step === lastStep &&
         <button
           className="btn"
-          onClick={handleSubmit}
+          onClick={() => checkValidation() && handleSubmit()}
           disabled={step !== lastStep}
         >
           제출

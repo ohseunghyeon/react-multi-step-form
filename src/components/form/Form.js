@@ -32,6 +32,7 @@ export default function Form() {
     }
 
     setIsError(true);
+    return false;
   }
 
   const handleSubmit = () => {
@@ -67,7 +68,7 @@ export default function Form() {
           step={step}
           setStep={setStep}
           lastStep={formData.items.length - 1}
-          isValid={checkValidation}
+          checkValidation={checkValidation}
           handleSubmit={handleSubmit}
         />
 
